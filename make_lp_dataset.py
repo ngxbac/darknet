@@ -25,7 +25,7 @@ def convert(imgSize, box):
 
 def create_dataset():
     df = pd.read_csv("/data/csv/CCPD/ccpd.csv.gz")
-    df = df.sample(n=55000, replace=False)
+    # df = df.sample(n=55000, replace=False)
 
     filenames = df.filename.values
     levels = df.level.values
@@ -39,26 +39,38 @@ def create_dataset():
 
         bbox = ast.literal_eval(bbox)
         xcen, ycen, w, h = convert(image_size, bbox)
-        with open(f'{out_dir}/{text_name}', 'w') as f:
+        with open(f'{root_dir}/{level}/{text_name}', 'w') as f:
             f.write(f"{0} {xcen} {ycen} {w} {h}")
 
-        cv2.imwrite(f"{out_dir}/{filename}", image)
+        # cv2.imwrite(f"{out_dir}/{filename}", image)
 
 
 def train_valid_split():
-    text_files = glob.glob(f"{out_dir}/*.jpg")
-    train_files, valid_files = train_test_split(text_files, test_size=0.1, random_state=42)
-    train_files = [train_file[2:] for train_file in train_files]
-    valid_files = [valid_file[2:] for valid_file in valid_files]
+    # text_files = glob.glob(f"{root_dir}/*/*.jpg")
+    # train_files, valid_files = train_test_split(text_files, test_size=0.1, random_state=42)
+    # train_files = [train_file[2:] for train_file in train_files]
+    # valid_files = [valid_file[2:] for valid_file in valid_files]
+    df = pd.read_csv("/data/csv/CCPD/ccpd.csv.gz")
+    train_df = df[df.fold != 0]
+    valid_df = df[df.fold == 0]
+    train_files = train_df.filename.values
+    train_levels = train_df.level.values
+
+    valid_files = valid_df.filename.values
+    valid_levels = valid_df.level.values
+
+    train_files = [f"./data/ccpd_dataset/{train_level}/{train_file}" for train_file, train_level in zip(train_files, train_levels)]
+    valid_files = [f"./data/ccpd_dataset/{train_level}/{train_file}" for train_file, train_level in zip(valid_files, valid_levels)]
+
     # import pdb; pdb.set_trace()
-    with open("./build/darknet/x64/data/license_plate_train.txt", "w") as f:
+    with open("./data/ccpd_train_0.txt", "w") as f:
         for train_file in train_files:
             f.write(train_file + "\n")
 
-    with open("./build/darknet/x64/data/license_plate_valid.txt", "w") as f:
+    with open("./data/ccpd_valid_0.txt", "w") as f:
         for valid_file in valid_files:
             f.write(valid_file + "\n")
 
 if __name__ == '__main__':
-    # create_dataset()
+    create_dataset()
     train_valid_split()

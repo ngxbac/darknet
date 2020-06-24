@@ -1,0 +1,5 @@
+classes= 1
+train = data/ccpd_train_0.txt
+valid = data/ccpd_valid_0.txt
+names = data/license_plate.names
+backup = ccpd_sgdr_mixup_mosac/
