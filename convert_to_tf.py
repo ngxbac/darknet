@@ -18,7 +18,17 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
     STRIDES = [8, 16, 32]
-    ANCHORS = [5, 32,  10, 21,   8, 34,  13, 28,  13, 32,  15, 30,  22, 20,  15, 35,  16, 36]
+    # anchor for char recognition
+    # ANCHORS = [6, 65,   9, 42,  13, 55,  12, 64,  14, 62,  22, 41,  15, 63,  14, 70,  16, 73]
+
+    # anchor for CCPD plate detection
+    # ANCHORS = [85, 19, 117, 24, 131, 30, 130, 39, 167, 33, 133, 55, 186, 42, 175, 64, 246, 51]
+
+    # anchor for UFPR plate detection
+    # ANCHORS = [65, 24,  83, 30,  87, 43, 108, 38, 105, 42, 110, 46, 145, 37, 128, 45, 139, 55]
+
+    # anchor for VNSynthesis plate detection
+    ANCHORS = [12, 46,  16, 41,  17, 47,  20, 46,  23, 45,  22, 53,  12,104,  27, 50,  30, 57]
     ANCHORS = np.asarray(ANCHORS).reshape((3, 3, 2))
     NUM_CLASS = 36
     XYSCALE = [1.2, 1.1, 1.05]
